@@ -1,119 +1,94 @@
-Red Hat OpenShift Infrastructure: Enterprise Reference Architecture
+**OpenShift Reference Architecture — Enterprise IaC & CI/CD**
 
-📌 Executive Summary
+A concise, production-ready reference architecture and Infrastructure-as-Code (IaC) to provision, configure, and operate a Red Hat OpenShift cluster from base OS to CI/CD and observability.
 
-Problem Statement: Enterprise deployments in Africa frequently lack standardized reference architectures and robust automation tooling for OpenShift container orchestration. This leads to inconsistent deployments, high operational overhead, and difficult scaling.
+**Executive Summary**
+- **Problem:** Many enterprise deployments lack a repeatable, documented OpenShift architecture and automation.
+- **Goal:** Provide a tested reference architecture, Ansible playbooks, pipeline templates, and observability patterns to enable consistent, auditable deployments.
 
-Project Objective: To engineer a production-grade, highly automated infrastructure blueprint. This project delivers a fully documented reference architecture and the Infrastructure-as-Code (IaC) required to provision, manage, and monitor a Red Hat OpenShift cluster from bare-metal/VM to full CI/CD deployment.
+**Table of contents**
+- **Overview**
+- **Technology stack**
+- **Quick start**
+- **Repository layout**
+- **How to run**
+- **Status**
+- **Contributing & support**
 
-🛠️ Technology Stack
+**Technology stack (high level)**
+- Container orchestration: Red Hat OpenShift / Kubernetes
+- IaC & automation: Ansible playbooks
+- Base OS: RHEL / Rocky Linux 9 / Fedora
+- Container runtime & registry: Podman, Red Hat Quay
+- CI/CD: Tekton (OpenShift Pipelines)
+- Observability: Prometheus, Loki, Grafana
 
-Category
+**Quick start (developer / operator)**
+1. Install prerequisites: Git, Ansible, Python 3, SSH access to target hosts.
+2. Clone the repo and inspect inventory and playbooks.
 
-Technology / Tool
+```bash
+git clone <repo-url>
+cd openshift-reference-architecture
+ls -la
+```
 
-Container Orchestration
+3. Edit inventory in [inventory/](inventory/) to match your environment.
+4. Run the base OS playbook (example):
 
-Red Hat OpenShift / Kubernetes
+```bash
+ansible-playbook -i inventory/hosts.ini playbooks/cluster-setup/01-base-os.yaml -u <ssh-user> --become
+```
 
-Infrastructure-as-Code (IaC)
+Notes:
+- Use `--check` to dry-run where supported.
+- Add `-e @secrets.yml` or vault-encrypted vars for credentials.
 
-Ansible
+**Repository layout**
+- [docs/](docs/) — architecture diagrams and design notes (Mermaid diagrams render on GitHub).
+- [playbooks/](playbooks/) — Ansible playbooks and roles.
+	- [playbooks/cluster-setup/](playbooks/cluster-setup/) — base OS and cluster bootstrapping.
+	- [playbooks/cicd/](playbooks/cicd/) — Tekton pipeline templates and automation.
+	- [playbooks/monitoring/](playbooks/monitoring/) — Prometheus, Loki, Grafana configs.
+- [inventory/](inventory/) — example host inventories and group variables.
 
-Base Operating System
+**How to run (recommendations)**
+- Validate inventory and connectivity: `ansible -i inventory/hosts.ini all -m ping`
+- Start with node bootstrap tasks in `playbooks/cluster-setup/`.
+- Use a dedicated control machine with Ansible and required credentials.
 
-RHEL / Rocky Linux 9 / Fedora
+Example commands
 
-Container Engine & Registry
+```bash
+# Validate hosts
+ansible -i inventory/hosts.ini all -m ping
 
-Podman, Red Hat Quay
+# Dry-run a playbook
+ansible-playbook -i inventory/hosts.ini playbooks/cluster-setup/01-base-os.yaml --check
 
-CI/CD Pipelines
+# Apply changes
+ansible-playbook -i inventory/hosts.ini playbooks/cluster-setup/01-base-os.yaml -u core --become
+```
 
-Tekton (OpenShift Pipelines)
+**Status & roadmap**
+- Phase 1 — Architecture & design: ✅ diagrams and design docs in [docs/](docs/)
+- Phase 2 — IaC: ⏳ core playbooks under [playbooks/cluster-setup/](playbooks/cluster-setup/) (documentation & tests in progress)
+- Phase 3 — CI/CD & registry: planned — Tekton templates and Quay modules
+- Phase 4 — Day-2 ops: planned — monitoring, alerting, backup/DR runbooks
 
-Observability & Logging
+**Contributing**
+- Edit or add playbooks under `playbooks/` and update `inventory/` samples.
+- Open issues for bugs, feature requests, or runbook gaps.
+- Create PRs with clear descriptions and test steps.
 
-Prometheus, Loki, Grafana
+**Support & contact**
+- For questions, open an issue or contact the maintainers in the repository.
 
-🎯 MVP Scope & Core Features
+**License**
+- See the repository `LICENSE` file if present.
 
-1. Production-Grade Cluster Deployment
-
-Automated Provisioning: Ansible playbooks to bootstrap base RHEL/Rocky OS, configure networking, disable swap, and prepare nodes.
-
-Cluster Orchestration: Automated rollout of the OpenShift Control Plane and Worker nodes.
-
-2. Container Image Registry (Quay)
-
-Centralized Storage: Deployment and configuration of Red Hat Quay for secure, private container image hosting.
-
-Image Management: Automated vulnerability scanning and image tagging workflows.
-
-3. CI/CD Pipeline Automation (Tekton)
-
-Cloud-Native Pipelines: Implementation of OpenShift Pipelines (Tekton) to automate the build, test, and deployment phases.
-
-GitOps Workflow: Automating the transition from source code (git push) to containerized application running on the cluster using Source-to-Image (S2I) and Buildah.
-
-4. Observability Stack (Prometheus + Loki)
-
-Metrics: Integration of the Prometheus Operator to scrape cluster, node, and pod-level metrics.
-
-Logging: Implementation of Loki for centralized, aggregated container log storage.
-
-Visualization: Grafana dashboards for real-time cluster health monitoring.
-
-📂 Project Deliverables & Status
-
-Phase 1: Architecture & Design (✅ Completed)
-
-[x] System Architecture Diagram
-
-[x] Network Topology Diagram
-
-[x] Deployment Diagram
-
-[x] CI/CD Pipeline Workflow Diagram
-
-Phase 2: Infrastructure as Code (⏳ In Progress)
-
-[ ] Deliverable: Cluster Deployment Runbook
-
-[ ] Deliverable: Ansible Playbook Documentation & Modules
-
-Phase 3: CI/CD & Registry Configuration (Pending)
-
-[ ] Automated Tekton Pipeline templates
-
-[ ] Red Hat Quay management module
-
-Phase 4: Day-2 Operations & Observability (Pending)
-
-[ ] Deliverable: Monitoring and Alerting Guide
-
-[ ] Deliverable: Disaster Recovery (DR) Plan
-
-🚀 Getting Started (For Team Members)
-
-Repository Structure
-
-openshift-reference-architecture/
-├── docs/                   # Architectural diagrams and documentation
-├── playbooks/              # Ansible automation scripts
-│   ├── cluster-setup/      # Base OS and cluster bootstrapping
-│   ├── cicd/               # Tekton pipeline definitions
-│   └── monitoring/         # Prometheus and Loki configuration
-├── inventory/              # Server inventory and variables
-└── README.md               # Project overview (This file)
-
-
-Prerequisites for Contribution
-
-WSL / Linux Environment: Ubuntu 22.04+ recommended.
-
-Ansible: Installed locally for testing playbooks (sudo apt install ansible).
-
-Git: Configured with SSH access to this repository.
-
-Note: All architectural diagrams in the docs/ folder are generated using Mermaid.js and will render natively within the GitHub UI.
+---
+If you'd like, I can also:
+- add a minimal `CONTRIBUTING.md` and `ISSUE_TEMPLATE.md`;
+- add example `secrets.yml` + Ansible Vault instructions;
+- or run a quick lint of the playbooks.
