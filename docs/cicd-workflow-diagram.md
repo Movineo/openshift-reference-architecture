@@ -1,3 +1,4 @@
+```mermaid
 flowchart LR
     %% Styling
     classDef dev fill:#f9f9f9,stroke:#333
@@ -22,3 +23,4 @@ flowchart LR
 
     Deploy -->|Updates Deployment Config| Cluster[OpenShift Cluster<br/>Running Application]:::deploy
     Quay -.->|Worker Nodes Pull Image| Cluster
+```

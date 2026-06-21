@@ -1,3 +1,4 @@
+```mermaid
 graph TD
     %% Styling Definitions
     classDef infra fill:#f4f4f4,stroke:#333,stroke-width:2px,color:#000;
@@ -60,3 +61,4 @@ graph TD
     Loki -->|Collects Container Logs| Worker_Layer
     Prometheus -.->|Feeds Data| Grafana
     Loki -.->|Feeds Data| Grafana
+```

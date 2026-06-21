@@ -1,3 +1,4 @@
+```mermaid
 graph TD
     %% Styling
     classDef control fill:#333,stroke:#fff,color:#fff
@@ -39,3 +40,4 @@ graph TD
     W1 -.->|Mounts PVs| S1
     W2 -.->|Mounts PVs| S1
     W3 -.->|Mounts PVs| S1
+```

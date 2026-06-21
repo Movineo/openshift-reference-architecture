@@ -1,3 +1,4 @@
+```mermaid
 graph TD
     %% Styling
     classDef internet fill:#00ccff,stroke:#000,color:#000
@@ -30,3 +31,4 @@ graph TD
         %% Database traffic
         ServiceB -->|Port 5432| DB[(PostgreSQL Database Pod)]:::node
     end
+```
