@@ -1,0 +1,86 @@
+---
+- name: Prepare RHEL/Rocky Linux 9 Nodes for OpenShift Installation
+  hosts: all
+  become: true
+  vars:
+    # Kernel parameters required for container runtimes and Kubernetes networking
+    sysctl_config:
+      net.bridge.bridge-nf-call-iptables: 1
+      net.bridge.bridge-nf-call-ip6tables: 1
+      net.ipv4.ip_forward: 1
+      user.max_user_namespaces: 28633
+
+  tasks:
+  - name: Ensure OS is updated to latest packages
+    dnf:
+      name: "*"
+      state: latest
+    tags: upgrade
+
+  - name: Install essential infrastructure utilities
+    dnf:
+      name:
+      - tar
+      - wget
+      - curl
+      - git
+      - jq
+      - bind-utils # Required for testing DNS validation
+      - lsof
+      - rsync
+      state: present
+
+  - name: Load required kernel modules for CRI-O and network bridging
+    modprobe:
+      name: "{{ item }}"
+      state: present
+    loop:
+    - overlay
+    - br_netfilter
+
+  - name: Ensure kernel modules load automatically on boot
+    copy:
+      content: |
+        overlay
+        br_netfilter
+      dest: /etc/modules-load.d/openshift.conf
+      owner: root
+      group: root
+      mode: '0644'
+
+  - name: Apply required Sysctl kernel tuning properties
+    sysctl:
+      name: "{{ item.key }}"
+      value: "{{ item.value | string }}"
+      sysctl_file: /etc/sysctl.d/99-openshift.conf
+      state: present
+      reload: true
+    loop: "{{ sysctl_config | dict2items }}"
+
+  - name: Disable Swap (Mandatory for Kubernetes/OpenShift stability)
+    shell: |
+      swapoff -a
+    failed_when: false
+
+  - name: Remove Swap references from fstab to prevent reactivation on boot
+    replace:
+      path: /etc/fstab
+      regexp: '^([^#].*?\sswap\s+.*)$'
+      replace: '# \1'
+
+  - name: Set up Network Time Protocol (NTP) Chrony for microsecond synchronization
+    dnf:
+      name: chrony
+      state: present
+
+  - name: Ensure Chrony service is enabled and actively running
+    service:
+      name: chronyd
+      state: started
+      enabled: true
+
+  - name: Verify DNS resolution is operational
+    command: host -t A google.com
+    register: dns_check
+    failed_when: dns_check.rc != 0
+    changed_when: false
