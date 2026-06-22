@@ -1,0 +1,37 @@
+---
+# This playbook prepares a raw Rocky Linux / RHEL server for OpenShift
+- name: Configure Base OS for OpenShift/Kubernetes Nodes
+  # 'hosts' defines which machines this runs on (we will define this later in an inventory file)
+  hosts: all
+  # 'become: yes' means run these tasks as the root/sudo user
+  become: yes
+  
+  tasks:
+    - name: Ensure required base enterprise packages are installed
+      ansible.builtin.package:
+        name:
+          - podman
+          - git
+          - curl
+          - vim
+          - tar
+          - jq
+          - firewalld
+        state: present
+
+    - name: Disable SWAP immediately (Kubernetes requirement)
+      ansible.builtin.command: swapoff -a
+      # We ignore errors in case swap is already disabled
+      ignore_errors: yes
+
+    - name: Permanently disable swap in /etc/fstab so it survives reboots
+      ansible.builtin.replace:
+        path: /etc/fstab
+        regexp: '^([^#].*?\sswap\s+sw\s+.*)$'
+        replace: '# \1'
+
+    - name: Ensure Firewalld is enabled and running
+      ansible.builtin.systemd:
+        name: firewalld
+        state: started
+        enabled: yes
