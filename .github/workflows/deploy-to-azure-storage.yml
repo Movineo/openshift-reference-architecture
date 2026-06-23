@@ -1,0 +1,25 @@
+name: Deploy to Azure Storage Static Website
+
+on:
+  push:
+    branches:
+      - main
+      - enablement-portal
+  pull_request:
+    types: [opened, synchronize, reopened]
+    branches:
+      - main
+      - enablement-portal
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v3
+
+      - name: Upload index.html to Azure Blob Storage
+        env:
+          AZURE_STORAGE_CONNECTION_STRING: ${{ secrets.AZURE_STORAGE_CONNECTION_STRING }}
+        run: |
+          az storage blob upload --account-name openshiftenableportal -c '$web' -f index.html -n index.html --overwrite true
