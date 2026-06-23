@@ -4,10 +4,12 @@ on:
   push:
     branches:
       - main
+      - enablement-portal
   pull_request:
     types: [opened, synchronize, reopened, closed]
     branches:
       - main
+      - enablement-portal
 
 jobs:
   build_and_deploy_job:
