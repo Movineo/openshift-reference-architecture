@@ -1,0 +1,1401 @@
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Enterprise Enablement Portal - OpenShift & DevOps</title>
+  
+  <!-- Tailwind CSS CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  
+  <!-- FontAwesome CDN for Icons -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  
+  <!-- Google Fonts: Inter & Red Hat Display -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Red+Hat+Display:wght@400;500;700;900&family=Red+Hat+Mono&family=Red+Hat+Text:wght@400;500;700&display=swap" rel="stylesheet">
+
+  <script>
+    tailwind.config = {
+      darkMode: 'class',
+      theme: {
+        extend: {
+          colors: {
+            redhat: {
+              red: '#EE0000',
+              redHover: '#CC0000',
+              crimson: '#A30000',
+              dark: '#151515',
+              charcoal: '#212529',
+              lightGray: '#F8F9FA',
+              cardDark: '#1D1E22',
+              borderDark: '#2D3139',
+              accent: '#393F4D'
+            }
+          },
+          fontFamily: {
+            sans: ['Inter', 'sans-serif'],
+            rhdisplay: ['Red Hat Display', 'sans-serif'],
+            rhtext: ['Red Hat Text', 'sans-serif'],
+            rhmono: ['Red Hat Mono', 'monospace'],
+          }
+        }
+      }
+    }
+  </script>
+
+  <style>
+    body {
+      font-family: 'Inter', sans-serif;
+    }
+    .font-rh {
+      font-family: 'Red Hat Display', sans-serif;
+    }
+    /* Custom Scrollbar */
+    ::-webkit-scrollbar {
+      width: 8px;
+    }
+    ::-webkit-scrollbar-track {
+      background: #F8F9FA;
+    }
+    .dark ::-webkit-scrollbar-track {
+      background: #151515;
+    }
+    ::-webkit-scrollbar-thumb {
+      background: #EE0000;
+      border-radius: 4px;
+    }
+    ::-webkit-scrollbar-thumb:hover {
+      background: #CC0000;
+    }
+    /* Glow Animations */
+    .glow-red {
+      box-shadow: 0 0 15px -3px rgba(238, 0, 0, 0.4);
+    }
+    .glow-red:hover {
+      box-shadow: 0 0 25px -1px rgba(238, 0, 0, 0.6);
+    }
+    /* Custom Micro-animations */
+    .float-item {
+      animation: float 6s ease-in-out infinite;
+    }
+    .float-delayed {
+      animation: float 6s ease-in-out infinite;
+      animation-delay: 3s;
+    }
+    .pulse-glow {
+      animation: pulseGlow 3s ease-in-out infinite;
+    }
+    @keyframes float {
+      0% { transform: translateY(0px); }
+      50% { transform: translateY(-10px); }
+      100% { transform: translateY(0px); }
+    }
+    @keyframes pulseGlow {
+      0%, 100% { opacity: 0.3; }
+      50% { opacity: 0.8; }
+    }
+  </style>
+</head>
+<body class="bg-white text-gray-900 dark:bg-redhat-dark dark:text-gray-100 transition-colors duration-300">
+
+  <!-- NAVBAR -->
+  <header class="fixed top-0 left-0 right-0 z-50 bg-white/95 border-b border-gray-200 backdrop-blur-md transition-colors duration-300 dark:bg-redhat-dark/95 dark:border-redhat-borderDark" id="main-header">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="flex items-center justify-between h-20">
+        
+        <!-- Logo -->
+        <a href="#" class="flex items-center space-x-3 group">
+          <div class="relative flex items-center justify-center w-10 h-10 bg-redhat-red rounded-lg overflow-hidden shadow-lg group-hover:scale-105 transition-transform">
+            <svg class="w-6 h-6 text-white" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <path d="M12 2L2 7L12 12L22 7L12 2Z" fill="currentColor"/>
+              <path d="M2 17L12 22L22 17" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+              <path d="M2 12L17 22 12" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+          </div>
+          <div class="flex flex-col">
+            <span class="font-rh font-bold text-lg tracking-tight text-redhat-dark dark:text-white">ENTERPRISE</span>
+            <span class="text-xs font-semibold text-redhat-red uppercase tracking-widest">Enablement Portal</span>
+          </div>
+        </a>
+
+        <!-- Desktop Navigation -->
+        <nav class="hidden md:flex items-center space-x-8">
+          <a href="#paths" class="text-gray-600 hover:text-redhat-red font-medium transition-colors dark:text-gray-300 dark:hover:text-redhat-red">Learning Paths</a>
+          <a href="#courses-sec" class="text-gray-600 hover:text-redhat-red font-medium transition-colors dark:text-gray-300 dark:hover:text-redhat-red">Official Training</a>
+          <a href="#runbooks" class="text-gray-600 hover:text-redhat-red font-medium transition-colors dark:text-gray-300 dark:hover:text-redhat-red">Internal Runbooks</a>
+          <a href="#sandbox" class="text-gray-600 hover:text-redhat-red font-medium transition-colors dark:text-gray-300 dark:hover:text-redhat-red">Developer Sandbox</a>
+        </nav>
+
+        <!-- Theme Toggle & Action Controls -->
+        <div class="flex items-center space-x-4">
+          <!-- Theme Toggle -->
+          <button id="theme-toggle" class="p-2.5 rounded-lg bg-gray-100 text-gray-600 hover:bg-gray-200 hover:text-redhat-dark dark:bg-redhat-accent/50 dark:text-gray-400 dark:hover:bg-redhat-accent dark:hover:text-white transition-all duration-200" title="Toggle Theme">
+            <i class="fa-solid fa-sun hidden dark:block"></i>
+            <i class="fa-solid fa-moon block dark:hidden"></i>
+          </button>
+
+          <!-- Sandbox CTA Button -->
+          <a href="#sandbox" class="hidden sm:inline-flex items-center px-5 py-2.5 rounded-lg bg-redhat-red hover:bg-redhat-redHover text-white font-semibold text-sm tracking-wide transition-all shadow-md hover:shadow-lg glow-red hover:-translate-y-0.5">
+            <i class="fa-solid fa-cubes mr-2"></i> Launch Sandbox
+          </a>
+
+          <!-- Mobile Menu Button -->
+          <button id="mobile-menu-btn" class="md:hidden p-2 rounded-lg bg-gray-100 text-gray-600 hover:bg-gray-200 dark:bg-redhat-accent/50 dark:text-gray-400 dark:hover:bg-redhat-accent dark:hover:text-white focus:outline-none">
+            <i class="fa-solid fa-bars text-xl" id="menu-icon"></i>
+          </button>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- Mobile Navigation -->
+    <div id="mobile-menu" class="hidden md:hidden bg-white border-b border-gray-200 px-4 pt-2 pb-6 space-y-3 transition-colors duration-300 dark:bg-redhat-cardDark dark:border-redhat-borderDark">
+      <a href="#paths" class="mobile-nav-link block px-3 py-2.5 rounded-lg text-gray-600 hover:bg-gray-100 hover:text-redhat-dark font-medium dark:text-gray-300 dark:hover:bg-redhat-accent dark:hover:text-white">Learning Paths</a>
+      <a href="#courses-sec" class="mobile-nav-link block px-3 py-2.5 rounded-lg text-gray-600 hover:bg-gray-100 hover:text-redhat-dark font-medium dark:text-gray-300 dark:hover:bg-redhat-accent dark:hover:text-white">Official Training</a>
+      <a href="#runbooks" class="mobile-nav-link block px-3 py-2.5 rounded-lg text-gray-600 hover:bg-gray-100 hover:text-redhat-dark font-medium dark:text-gray-300 dark:hover:bg-redhat-accent dark:hover:text-white">Internal Runbooks</a>
+      <a href="#sandbox" class="mobile-nav-link block px-3 py-2.5 rounded-lg text-gray-600 hover:bg-gray-100 hover:text-redhat-dark font-medium dark:text-gray-300 dark:hover:bg-redhat-accent dark:hover:text-white">Developer Sandbox</a>
+      <a href="#sandbox" class="block w-full text-center px-4 py-2.5 mt-2 rounded-lg bg-redhat-red text-white font-semibold">
+        <i class="fa-solid fa-cubes mr-2"></i> Launch Sandbox
+      </a>
+    </div>
+  </header>
+
+  <!-- HERO SECTION -->
+  <section class="relative pt-32 pb-20 md:pt-40 md:pb-28 overflow-hidden bg-gradient-to-b from-redhat-lightGray via-white to-redhat-lightGray dark:from-redhat-dark dark:via-redhat-dark dark:to-redhat-cardDark transition-colors duration-300" id="hero">
+    
+    <!-- Background grid elements -->
+    <div class="absolute inset-0 opacity-10 pointer-events-none bg-[linear-gradient(to_right,#333_1px,transparent_1px),linear-gradient(to_bottom,#333_1px,transparent_1px)] bg-[size:4rem_4rem]"></div>
+    
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
+      <div class="grid grid-cols-1 lg:grid-cols-12 gap-12 items-center">
+        
+        <!-- Left Side: Content & Search -->
+        <div class="lg:col-span-7 text-center lg:text-left space-y-6">
+          <div class="inline-flex items-center space-x-2 px-3 py-1 rounded-full bg-redhat-red/10 border border-redhat-red/30 text-redhat-red text-sm font-semibold">
+            <span class="flex h-2 w-2 relative">
+              <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-redhat-red opacity-75"></span>
+              <span class="relative inline-flex rounded-full h-2 w-2 bg-redhat-red"></span>
+            </span>
+            <span>Enterprise Upskilling Initiative</span>
+          </div>
+
+          <h1 class="font-rh font-extrabold text-4xl sm:text-5xl lg:text-6xl tracking-tight leading-none text-redhat-dark dark:text-white">
+            Master OpenShift & <br class="hidden sm:inline">
+            <span class="text-redhat-red bg-gradient-to-r from-redhat-red to-red-500 bg-clip-text text-transparent">Cloud-Native Delivery</span>
+          </h1>
+
+          <p class="text-gray-600 dark:text-gray-400 text-lg max-w-2xl mx-auto lg:mx-0">
+            A centralized enablement portal aggregating Red Hat curricula, role-based learning paths, interactive sandboxes, and enterprise runbooks. Build container skills, configure with GitOps, and deploy with confidence.
+          </p>
+
+          <!-- Interactive Search Bar -->
+          <div class="max-w-xl mx-auto lg:mx-0 pt-4">
+            <div class="relative group shadow-xl">
+              <div class="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none text-gray-400 group-focus-within:text-redhat-red transition-colors">
+                <i class="fa-solid fa-magnifying-glass text-lg"></i>
+              </div>
+              <input type="text" id="hero-search" 
+                placeholder="Search courses by code, title, or keywords..." 
+                class="w-full pl-12 pr-12 py-4 rounded-xl bg-white border-2 border-gray-200 text-redhat-dark placeholder-gray-400 focus:outline-none focus:border-redhat-red focus:bg-white dark:bg-redhat-cardDark/80 dark:border-redhat-borderDark dark:text-white dark:placeholder-gray-500 dark:focus:border-redhat-red dark:focus:bg-redhat-dark transition-all"
+                autocomplete="off">
+              <button id="clear-search-btn" class="absolute inset-y-0 right-0 pr-4 flex items-center text-gray-400 hover:text-redhat-dark dark:hover:text-white hidden" title="Clear Search">
+                <i class="fa-solid fa-circle-xmark"></i>
+              </button>
+              <div class="absolute right-4 top-1/2 -translate-y-1/2 text-xs font-semibold px-2 py-1 bg-gray-100 text-gray-400 rounded pointer-events-none hidden sm:block dark:bg-redhat-accent/50">
+                /
+              </div>
+            </div>
+            
+            <!-- Quick Filter Tags -->
+            <div class="mt-3.5 flex flex-wrap gap-2 justify-center lg:justify-start items-center">
+              <span class="text-xs text-gray-500 font-semibold uppercase tracking-wider">Quick Filters:</span>
+              <button class="quick-tag px-3 py-1 text-xs rounded-full bg-gray-100 border border-gray-200 text-gray-600 hover:bg-redhat-red hover:text-white dark:bg-redhat-accent/40 dark:border-redhat-borderDark dark:text-gray-300 dark:hover:bg-redhat-red dark:hover:text-white transition-all" data-tag="RH124">RH124</button>
+              <button class="quick-tag px-3 py-1 text-xs rounded-full bg-gray-100 border border-gray-200 text-gray-600 hover:bg-redhat-red hover:text-white dark:bg-redhat-accent/40 dark:border-redhat-borderDark dark:text-gray-300 dark:hover:bg-redhat-red dark:hover:text-white transition-all" data-tag="RH294">RH294</button>
+              <button class="quick-tag px-3 py-1 text-xs rounded-full bg-gray-100 border border-gray-200 text-gray-600 hover:bg-redhat-red hover:text-white dark:bg-redhat-accent/40 dark:border-redhat-borderDark dark:text-gray-300 dark:hover:bg-redhat-red dark:hover:text-white transition-all" data-tag="DO180">DO180</button>
+              <button class="quick-tag px-3 py-1 text-xs rounded-full bg-gray-100 border border-gray-200 text-gray-600 hover:bg-redhat-red hover:text-white dark:bg-redhat-accent/40 dark:border-redhat-borderDark dark:text-gray-300 dark:hover:bg-redhat-red dark:hover:text-white transition-all" data-tag="DO280">DO280</button>
+              <button class="quick-tag px-3 py-1 text-xs rounded-full bg-gray-100 border border-gray-200 text-gray-600 hover:bg-redhat-red hover:text-white dark:bg-redhat-accent/40 dark:border-redhat-borderDark dark:text-gray-300 dark:hover:bg-redhat-red dark:hover:text-white transition-all" data-tag="Ansible">Ansible</button>
+            </div>
+          </div>
+
+          <!-- CTAs -->
+          <div class="pt-4 flex flex-col sm:flex-row items-center justify-center lg:justify-start gap-4">
+            <a href="#paths" class="w-full sm:w-auto text-center px-8 py-3.5 rounded-xl bg-redhat-red hover:bg-redhat-redHover text-white font-bold tracking-wide transition-all shadow-lg hover:shadow-xl glow-red hover:-translate-y-0.5">
+              Start Learning Path
+            </a>
+            <a href="#runbooks" class="w-full sm:w-auto text-center px-8 py-3.5 rounded-xl bg-white border border-gray-200 text-redhat-dark hover:bg-gray-50 dark:bg-redhat-accent/60 dark:border-redhat-borderDark dark:text-gray-200 dark:hover:bg-redhat-accent font-bold tracking-wide transition-all hover:-translate-y-0.5">
+              Browse Internal Runbooks
+            </a>
+          </div>
+        </div>
+
+        <!-- Right Side: Beautiful CSS/SVG Interactive Cluster Diagram -->
+        <div class="lg:col-span-5 relative mt-8 lg:mt-0">
+          <div class="relative w-full max-w-md mx-auto aspect-square rounded-2xl bg-white border border-gray-200 p-6 shadow-2xl flex flex-col justify-between overflow-hidden dark:bg-redhat-cardDark/40 dark:border-redhat-borderDark/60">
+            <!-- Simulated Tech Circles Background -->
+            <div class="absolute -right-16 -top-16 w-48 h-48 rounded-full bg-redhat-red/10 blur-3xl pulse-glow"></div>
+            <div class="absolute -left-16 -bottom-16 w-48 h-48 rounded-full bg-blue-500/10 blur-3xl pulse-glow"></div>
+
+            <!-- Header of cluster simulation -->
+            <div class="flex items-center justify-between border-b border-gray-100 pb-4 dark:border-redhat-borderDark">
+              <div class="flex items-center space-x-2">
+                <span class="h-3.5 w-3.5 rounded-full bg-redhat-red shadow animate-pulse"></span>
+                <span class="font-rhmono text-xs font-semibold uppercase tracking-wider text-gray-500 dark:text-gray-400">cluster-jhub.prod.lan</span>
+              </div>
+              <span class="px-2 py-0.5 rounded bg-green-500/10 text-green-500 text-[10px] font-bold border border-green-500/20">ACTIVE</span>
+            </div>
+
+            <!-- Central Diagram Nodes -->
+            <div class="flex-grow flex items-center justify-center py-6 relative">
+              
+              <!-- Connection Lines (SVG) -->
+              <svg class="absolute inset-0 w-full h-full text-gray-200 dark:text-redhat-borderDark/40" viewBox="0 0 300 200" fill="none">
+                <path d="M50 100 L150 50 M50 100 L150 150 M150 50 L250 100 M150 150 L250 100 M150 50 L150 150" stroke="currentColor" stroke-width="2" stroke-dasharray="4 4" />
+              </svg>
+
+              <!-- Node 1: Control Plane -->
+              <div class="absolute top-[20px] left-[110px] flex flex-col items-center z-10 float-item">
+                <div class="w-14 h-14 rounded-xl bg-gradient-to-br from-redhat-red to-red-700 flex items-center justify-center shadow-lg border border-red-500/20 glow-red">
+                  <i class="fa-solid fa-circle-nodes text-xl text-white"></i>
+                </div>
+                <span class="text-[10px] font-semibold mt-1 font-rhmono text-gray-600 dark:text-gray-300">Control Plane</span>
+              </div>
+
+              <!-- Node 2: Worker 1 -->
+              <div class="absolute bottom-[20px] left-[40px] flex flex-col items-center z-10 float-delayed">
+                <div class="w-12 h-12 rounded-lg bg-gray-100 border border-gray-200 dark:bg-redhat-accent/80 dark:border-redhat-borderDark flex items-center justify-center shadow-md">
+                  <i class="fa-solid fa-server text-lg text-gray-600 dark:text-gray-300"></i>
+                </div>
+                <span class="text-[9px] font-semibold mt-1 font-rhmono text-gray-500 dark:text-gray-400">worker-01</span>
+              </div>
+
+              <!-- Node 3: Worker 2 -->
+              <div class="absolute bottom-[20px] right-[40px] flex flex-col items-center z-10 float-item">
+                <div class="w-12 h-12 rounded-lg bg-gray-100 border border-gray-200 dark:bg-redhat-accent/80 dark:border-redhat-borderDark flex items-center justify-center shadow-md">
+                  <i class="fa-solid fa-server text-lg text-gray-600 dark:text-gray-300"></i>
+                </div>
+                <span class="text-[9px] font-semibold mt-1 font-rhmono text-gray-500 dark:text-gray-400">worker-02</span>
+              </div>
+
+              <!-- Central Hub: Ingress / Router -->
+              <div class="absolute top-[80px] right-[100px] flex flex-col items-center z-10 float-delayed">
+                <div class="w-14 h-14 rounded-full bg-gray-100 border border-gray-200 dark:bg-slate-800 dark:border-slate-700 flex items-center justify-center shadow-lg">
+                  <i class="fa-solid fa-route text-xl text-redhat-red"></i>
+                </div>
+                <span class="text-[9px] font-semibold mt-1 font-rhmono text-gray-600 dark:text-gray-300">ingress-controller</span>
+              </div>
+
+            </div>
+
+            <!-- Stats Panel Footer -->
+            <div class="grid grid-cols-3 gap-2 border-t border-gray-100 pt-4 text-center dark:border-redhat-borderDark">
+              <div>
+                <span class="block text-lg font-bold font-rh text-redhat-dark dark:text-white">99.98%</span>
+                <span class="text-[10px] text-gray-500 font-semibold uppercase">Uptime</span>
+              </div>
+              <div class="border-x border-gray-100 dark:border-redhat-borderDark">
+                <span class="block text-lg font-bold font-rh text-redhat-red">4 Paths</span>
+                <span class="text-[10px] text-gray-500 font-semibold uppercase">Curricula</span>
+              </div>
+              <div>
+                <span class="block text-lg font-bold font-rh text-redhat-dark dark:text-white">15+</span>
+                <span class="text-[10px] text-gray-500 font-semibold uppercase">Runbooks</span>
+              </div>
+            </div>
+
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+  <!-- SEARCH RESULTS / FILTER STATUS STATS -->
+  <div id="search-status-bar" class="hidden max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 -mt-6 mb-10 relative z-20">
+    <div class="bg-gray-50 border border-gray-200 rounded-xl p-4 flex items-center justify-between dark:bg-redhat-accent/30 dark:border-redhat-borderDark">
+      <div class="flex items-center space-x-3">
+        <i class="fa-solid fa-filter text-redhat-red animate-pulse"></i>
+        <span class="text-sm text-gray-600 dark:text-gray-300">
+          Showing search results for "<span id="search-query-display" class="font-bold text-redhat-dark dark:text-white"></span>" &mdash; found <span id="search-count" class="font-bold text-redhat-red">0</span> matching items.
+        </span>
+      </div>
+      <button id="reset-search-btn" class="px-3 py-1 rounded bg-redhat-red/10 text-redhat-red hover:bg-redhat-red hover:text-white border border-redhat-red/30 transition-all text-xs font-semibold">
+        Clear Filter
+      </button>
+    </div>
+  </div>
+
+  <!-- ROLE-BASED LEARNING PATHS (INTERACTIVE WITH DETAILED CHECKLISTS) -->
+  <section class="py-20 bg-white dark:bg-redhat-dark transition-colors duration-300" id="paths">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      
+      <!-- Section Header -->
+      <div class="text-center max-w-3xl mx-auto mb-16">
+        <h2 class="font-rh font-extrabold text-3xl sm:text-4xl text-redhat-dark dark:text-white">
+          Role-Based Learning Paths
+        </h2>
+        <div class="h-1.5 w-16 bg-redhat-red mx-auto my-4 rounded"></div>
+        <p class="text-gray-600 dark:text-gray-400">
+          Tailored engineering pathways with dynamic checklists. Tick off topics to calculate and persist completion progress.
+        </p>
+      </div>
+
+      <!-- Paths Grid -->
+      <div class="grid grid-cols-1 lg:grid-cols-2 gap-8" id="paths-container">
+
+        <!-- Path 1: Containerization Basics -->
+        <div class="learning-path-card group bg-redhat-lightGray border border-gray-200 rounded-2xl p-6 hover:border-redhat-red/50 hover:shadow-2xl transition-all duration-300 dark:bg-redhat-cardDark dark:border-redhat-borderDark dark:hover:border-redhat-red/50" data-keywords="docker podman container cri-o basic command parity rootless oci image quay">
+          <div class="flex items-start justify-between">
+            <div class="w-12 h-12 rounded-xl bg-gradient-to-br from-redhat-red to-red-700 flex items-center justify-center text-white text-xl shadow-lg glow-red">
+              <i class="fa-solid fa-box-archive"></i>
+            </div>
+            <div class="flex items-center space-x-2 text-xs font-semibold text-gray-500 dark:text-gray-400">
+              <span><i class="fa-solid fa-clock"></i> 6 Hours</span>
+              <span>&bull;</span>
+              <span class="px-2.5 py-0.5 bg-gray-200 text-gray-700 dark:bg-redhat-accent/40 dark:text-gray-300 rounded text-[10px]">Foundational</span>
+            </div>
+          </div>
+          
+          <h3 class="font-rh font-bold text-xl text-redhat-dark dark:text-white mt-5 group-hover:text-redhat-red dark:group-hover:text-redhat-red transition-colors">Containerization Basics</h3>
+          <p class="text-gray-600 dark:text-gray-400 text-sm mt-2">
+            Learn the foundational building blocks of containerized architectures, OCI standard models, and registry setups.
+          </p>
+
+          <div class="mt-6 border-t border-gray-200 dark:border-redhat-borderDark/60 pt-4">
+            <div class="flex items-center justify-between mb-3">
+              <span class="text-xs font-semibold uppercase tracking-wider text-gray-500">Modules Checklist</span>
+              <span class="path-progress-txt text-xs font-bold text-redhat-red" data-path-progress="container">0% Completed</span>
+            </div>
+            
+            <ul class="space-y-3 text-sm text-gray-700 dark:text-gray-300">
+              <li class="flex items-center space-x-3">
+                <input type="checkbox" class="path-checkbox w-4 h-4 rounded text-redhat-red border-gray-300 dark:border-redhat-borderDark bg-white dark:bg-redhat-dark focus:ring-redhat-red cursor-pointer" data-path="container" data-idx="0">
+                <span>Docker & Podman CLI Command parity</span>
+              </li>
+              <li class="flex items-center space-x-3">
+                <input type="checkbox" class="path-checkbox w-4 h-4 rounded text-redhat-red border-gray-300 dark:border-redhat-borderDark bg-white dark:bg-redhat-dark focus:ring-redhat-red cursor-pointer" data-path="container" data-idx="1">
+                <span>Building OCI images securely (Multi-stage builds)</span>
+              </li>
+              <li class="flex items-center space-x-3">
+                <input type="checkbox" class="path-checkbox w-4 h-4 rounded text-redhat-red border-gray-300 dark:border-redhat-borderDark bg-white dark:bg-redhat-dark focus:ring-redhat-red cursor-pointer" data-path="container" data-idx="2">
+                <span>Working with Red Hat Quay registry credentials</span>
+              </li>
+              <li class="flex items-center space-x-3">
+                <input type="checkbox" class="path-checkbox w-4 h-4 rounded text-redhat-red border-gray-300 dark:border-redhat-borderDark bg-white dark:bg-redhat-dark focus:ring-redhat-red cursor-pointer" data-path="container" data-idx="3">
+                <span>Implementing rootless containers in production</span>
+              </li>
+            </ul>
+          </div>
+        </div>
+
+        <!-- Path 2: OpenShift Administrator -->
+        <div class="learning-path-card group bg-redhat-lightGray border border-gray-200 rounded-2xl p-6 hover:border-redhat-red/50 hover:shadow-2xl transition-all duration-300 dark:bg-redhat-cardDark dark:border-redhat-borderDark dark:hover:border-redhat-red/50" data-keywords="openshift administrator admin provisioning network rbac logging operator ex280 troubleshooting">
+          <div class="flex items-start justify-between">
+            <div class="w-12 h-12 rounded-xl bg-gradient-to-br from-redhat-red to-red-700 flex items-center justify-center text-white text-xl shadow-lg glow-red">
+              <i class="fa-solid fa-sliders"></i>
+            </div>
+            <div class="flex items-center space-x-2 text-xs font-semibold text-gray-500 dark:text-gray-400">
+              <span><i class="fa-solid fa-clock"></i> 18 Hours</span>
+              <span>&bull;</span>
+              <span class="px-2.5 py-0.5 bg-gray-200 text-gray-700 dark:bg-redhat-accent/40 dark:text-gray-300 rounded text-[10px]">Advanced</span>
+            </div>
+          </div>
+          
+          <h3 class="font-rh font-bold text-xl text-redhat-dark dark:text-white mt-5 group-hover:text-redhat-red dark:group-hover:text-redhat-red transition-colors">OpenShift Administrator</h3>
+          <p class="text-gray-600 dark:text-gray-400 text-sm mt-2">
+            Master cluster administration: user syncs, networking isolation, Prometheus metrics, and operator configs.
+          </p>
+
+          <div class="mt-6 border-t border-gray-200 dark:border-redhat-borderDark/60 pt-4">
+            <div class="flex items-center justify-between mb-3">
+              <span class="text-xs font-semibold uppercase tracking-wider text-gray-500">Modules Checklist</span>
+              <span class="path-progress-txt text-xs font-bold text-redhat-red" data-path-progress="admin">0% Completed</span>
+            </div>
+            
+            <ul class="space-y-3 text-sm text-gray-700 dark:text-gray-300">
+              <li class="flex items-center space-x-3">
+                <input type="checkbox" class="path-checkbox w-4 h-4 rounded text-redhat-red border-gray-300 dark:border-redhat-borderDark bg-white dark:bg-redhat-dark focus:ring-redhat-red cursor-pointer" data-path="admin" data-idx="0">
+                <span>Cluster Node status, Operators, & MachineConfigs</span>
+              </li>
+              <li class="flex items-center space-x-3">
+                <input type="checkbox" class="path-checkbox w-4 h-4 rounded text-redhat-red border-gray-300 dark:border-redhat-borderDark bg-white dark:bg-redhat-dark focus:ring-redhat-red cursor-pointer" data-path="admin" data-idx="1">
+                <span>Configuring RBAC, LDAP, & Group Mapping</span>
+              </li>
+              <li class="flex items-center space-x-3">
+                <input type="checkbox" class="path-checkbox w-4 h-4 rounded text-redhat-red border-gray-300 dark:border-redhat-borderDark bg-white dark:bg-redhat-dark focus:ring-redhat-red cursor-pointer" data-path="admin" data-idx="2">
+                <span>Network Isolation & OpenShift SDN/OVN NetworkPolicies</span>
+              </li>
+              <li class="flex items-center space-x-3">
+                <input type="checkbox" class="path-checkbox w-4 h-4 rounded text-redhat-red border-gray-300 dark:border-redhat-borderDark bg-white dark:bg-redhat-dark focus:ring-redhat-red cursor-pointer" data-path="admin" data-idx="3">
+                <span>Alerting rules, metrics exporter, & Prometheus query</span>
+              </li>
+            </ul>
+          </div>
+        </div>
+
+        <!-- Path 3: CI/CD Pipeline Engineer -->
+        <div class="learning-path-card group bg-redhat-lightGray border border-gray-200 rounded-2xl p-6 hover:border-redhat-red/50 hover:shadow-2xl transition-all duration-300 dark:bg-redhat-cardDark dark:border-redhat-borderDark dark:hover:border-redhat-red/50" data-keywords="ci/cd pipeline engineer tekton argocd quay gitops webhook trigger dockerconfigjson sync">
+          <div class="flex items-start justify-between">
+            <div class="w-12 h-12 rounded-xl bg-gradient-to-br from-redhat-red to-red-700 flex items-center justify-center text-white text-xl shadow-lg glow-red">
+              <i class="fa-solid fa-code-merge"></i>
+            </div>
+            <div class="flex items-center space-x-2 text-xs font-semibold text-gray-500 dark:text-gray-400">
+              <span><i class="fa-solid fa-clock"></i> 14 Hours</span>
+              <span>&bull;</span>
+              <span class="px-2.5 py-0.5 bg-gray-200 text-gray-700 dark:bg-redhat-accent/40 dark:text-gray-300 rounded text-[10px]">Intermediate</span>
+            </div>
+          </div>
+          
+          <h3 class="font-rh font-bold text-xl text-redhat-dark dark:text-white mt-5 group-hover:text-redhat-red dark:group-hover:text-redhat-red transition-colors">CI/CD Pipeline Engineer</h3>
+          <p class="text-gray-600 dark:text-gray-400 text-sm mt-2">
+            Automate code builds and continuous deployment pipelines using modern cloud-native GitOps principles.
+          </p>
+
+          <div class="mt-6 border-t border-gray-200 dark:border-redhat-borderDark/60 pt-4">
+            <div class="flex items-center justify-between mb-3">
+              <span class="text-xs font-semibold uppercase tracking-wider text-gray-500">Modules Checklist</span>
+              <span class="path-progress-txt text-xs font-bold text-redhat-red" data-path-progress="devops">0% Completed</span>
+            </div>
+            
+            <ul class="space-y-3 text-sm text-gray-700 dark:text-gray-300">
+              <li class="flex items-center space-x-3">
+                <input type="checkbox" class="path-checkbox w-4 h-4 rounded text-redhat-red border-gray-300 dark:border-redhat-borderDark bg-white dark:bg-redhat-dark focus:ring-redhat-red cursor-pointer" data-path="devops" data-idx="0">
+                <span>Tekton Tasks, Pipelines, and Workspace configuration</span>
+              </li>
+              <li class="flex items-center space-x-3">
+                <input type="checkbox" class="path-checkbox w-4 h-4 rounded text-redhat-red border-gray-300 dark:border-redhat-borderDark bg-white dark:bg-redhat-dark focus:ring-redhat-red cursor-pointer" data-path="devops" data-idx="1">
+                <span>Configuring event listeners & Triggers for GitLab</span>
+              </li>
+              <li class="flex items-center space-x-3">
+                <input type="checkbox" class="path-checkbox w-4 h-4 rounded text-redhat-red border-gray-300 dark:border-redhat-borderDark bg-white dark:bg-redhat-dark focus:ring-redhat-red cursor-pointer" data-path="devops" data-idx="2">
+                <span>ArgoCD application sync policies and multi-cluster setups</span>
+              </li>
+              <li class="flex items-center space-x-3">
+                <input type="checkbox" class="path-checkbox w-4 h-4 rounded text-redhat-red border-gray-300 dark:border-redhat-borderDark bg-white dark:bg-redhat-dark focus:ring-redhat-red cursor-pointer" data-path="devops" data-idx="3">
+                <span>Quay security vulnerability scanners and image signing</span>
+              </li>
+            </ul>
+          </div>
+        </div>
+
+        <!-- Path 4: Infrastructure as Code -->
+        <div class="learning-path-card group bg-redhat-lightGray border border-gray-200 rounded-2xl p-6 hover:border-redhat-red/50 hover:shadow-2xl transition-all duration-300 dark:bg-redhat-cardDark dark:border-redhat-borderDark dark:hover:border-redhat-red/50" data-keywords="infrastructure as code iac ansible automation playbook configuration system os rhel coreos collection">
+          <div class="flex items-start justify-between">
+            <div class="w-12 h-12 rounded-xl bg-gradient-to-br from-redhat-red to-red-700 flex items-center justify-center text-white text-xl shadow-lg glow-red">
+              <i class="fa-solid fa-terminal"></i>
+            </div>
+            <div class="flex items-center space-x-2 text-xs font-semibold text-gray-500 dark:text-gray-400">
+              <span><i class="fa-solid fa-clock"></i> 10 Hours</span>
+              <span>&bull;</span>
+              <span class="px-2.5 py-0.5 bg-gray-200 text-gray-700 dark:bg-redhat-accent/40 dark:text-gray-300 rounded text-[10px]">Intermediate</span>
+            </div>
+          </div>
+          
+          <h3 class="font-rh font-bold text-xl text-redhat-dark dark:text-white mt-5 group-hover:text-redhat-red dark:group-hover:text-redhat-red transition-colors">Infrastructure as Code</h3>
+          <p class="text-gray-600 dark:text-gray-400 text-sm mt-2">
+            Automate bare metal, virtualization, and cloud operating system configurations using Ansible collections.
+          </p>
+
+          <div class="mt-6 border-t border-gray-200 dark:border-redhat-borderDark/60 pt-4">
+            <div class="flex items-center justify-between mb-3">
+              <span class="text-xs font-semibold uppercase tracking-wider text-gray-500">Modules Checklist</span>
+              <span class="path-progress-txt text-xs font-bold text-redhat-red" data-path-progress="iac">0% Completed</span>
+            </div>
+            
+            <ul class="space-y-3 text-sm text-gray-700 dark:text-gray-300">
+              <li class="flex items-center space-x-3">
+                <input type="checkbox" class="path-checkbox w-4 h-4 rounded text-redhat-red border-gray-300 dark:border-redhat-borderDark bg-white dark:bg-redhat-dark focus:ring-redhat-red cursor-pointer" data-path="iac" data-idx="0">
+                <span>Ansible Playbook structures, roles, and vault secrets</span>
+              </li>
+              <li class="flex items-center space-x-3">
+                <input type="checkbox" class="path-checkbox w-4 h-4 rounded text-redhat-red border-gray-300 dark:border-redhat-borderDark bg-white dark:bg-redhat-dark focus:ring-redhat-red cursor-pointer" data-path="iac" data-idx="1">
+                <span>Automating Red Hat Enterprise Linux system variables</span>
+              </li>
+              <li class="flex items-center space-x-3">
+                <input type="checkbox" class="path-checkbox w-4 h-4 rounded text-redhat-red border-gray-300 dark:border-redhat-borderDark bg-white dark:bg-redhat-dark focus:ring-redhat-red cursor-pointer" data-path="iac" data-idx="2">
+                <span>Using kubernetes.core Ansible collections</span>
+              </li>
+              <li class="flex items-center space-x-3">
+                <input type="checkbox" class="path-checkbox w-4 h-4 rounded text-redhat-red border-gray-300 dark:border-redhat-borderDark bg-white dark:bg-redhat-dark focus:ring-redhat-red cursor-pointer" data-path="iac" data-idx="3">
+                <span>Automated provisioning & scaling of worker nodes</span>
+              </li>
+            </ul>
+          </div>
+        </div>
+
+      </div>
+
+    </div>
+  </section>
+
+  <!-- DYNAMIC TRAINING CATALOG SECTION -->
+  <section class="py-20 bg-redhat-lightGray border-y border-gray-200 dark:bg-redhat-cardDark dark:border-redhat-borderDark transition-colors duration-300" id="courses-sec">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      
+      <!-- Section Header -->
+      <div class="text-center max-w-3xl mx-auto mb-16">
+        <h2 class="font-rh font-extrabold text-3xl sm:text-4xl text-redhat-dark dark:text-white">
+          Red Hat Official Course Catalog
+        </h2>
+        <div class="h-1.5 w-16 bg-redhat-red mx-auto my-4 rounded"></div>
+        <p class="text-gray-600 dark:text-gray-400">
+          Explore Red Hat's official structured tracks. Filter the courses dynamically using the Hero Search bar above to find the exact curriculum for Linux, Ansible, and OpenShift.
+        </p>
+      </div>
+
+      <!-- Dynamic Course Grid -->
+      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6" id="courses-grid-container">
+        <!-- JS Injected Cards Go Here -->
+      </div>
+
+      <!-- Empty State Card -->
+      <div id="courses-empty-state" class="hidden text-center py-16 px-6 bg-white border border-gray-200 rounded-2xl max-w-lg mx-auto shadow-sm dark:bg-redhat-dark dark:border-redhat-borderDark">
+        <div class="w-16 h-16 bg-redhat-red/10 text-redhat-red rounded-full flex items-center justify-center mx-auto mb-4 border border-redhat-red/20">
+          <i class="fa-solid fa-graduation-cap text-3xl"></i>
+        </div>
+        <h4 class="font-rh font-bold text-lg text-redhat-dark dark:text-white">No Official Courses Found</h4>
+        <p class="text-gray-500 text-sm mt-2">No courses match your query. Try searching for core keywords like "Linux", "Ansible", or codes like "DO280" or "RH124".</p>
+        <button id="clear-search-empty-btn" class="mt-5 px-5 py-2.5 bg-redhat-red hover:bg-redhat-redHover text-white text-sm font-semibold rounded-lg transition-colors shadow">
+          View All Courses
+        </button>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- INTERNAL RUNBOOKS & GUIDES -->
+  <section class="py-20 bg-white dark:bg-redhat-dark transition-colors duration-300" id="runbooks">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      
+      <!-- Section Header -->
+      <div class="text-center max-w-3xl mx-auto mb-16">
+        <h2 class="font-rh font-extrabold text-3xl sm:text-4xl text-redhat-dark dark:text-white">
+          Internal Runbooks & Guides
+        </h2>
+        <div class="h-1.5 w-16 bg-redhat-red mx-auto my-4 rounded"></div>
+        <p class="text-gray-600 dark:text-gray-400">
+          Custom enterprise documentation written by our SRE and DevOps teams. Find local standards, firewall rules, namespace requests, and container build configurations.
+        </p>
+      </div>
+
+      <!-- Runbooks Grid -->
+      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6" id="runbooks-container">
+
+        <!-- Guide 1: Ansible Base OS automation -->
+        <div class="runbook-card bg-redhat-lightGray border border-gray-200 rounded-xl p-5 hover:border-redhat-red/40 hover:-translate-y-1 transition-all duration-300 flex flex-col justify-between dark:bg-redhat-cardDark dark:border-redhat-borderDark dark:hover:border-redhat-red/40" data-keywords="base os ansible playbook playbooks/01-base-os.yaml automation proxy configure host system network">
+          <div class="space-y-3">
+            <div class="flex items-center justify-between">
+              <span class="px-2 py-0.5 bg-blue-500/10 text-blue-500 border border-blue-500/20 text-[10px] font-bold rounded uppercase">Automation</span>
+              <span class="text-xs text-gray-500 font-semibold font-mono">playbooks/01-base-os.yaml</span>
+            </div>
+            <h4 class="font-rh font-bold text-lg text-redhat-dark dark:text-white">Base OS Config Playbook</h4>
+            <p class="text-gray-600 dark:text-gray-400 text-xs leading-relaxed">
+              Standard Ansible configuration script to set up enterprise proxies, configure DNS resolvers, adjust log rotation settings, and lock down security controls on RHEL target hosts.
+            </p>
+          </div>
+          <div class="mt-6 pt-4 border-t border-gray-200 dark:border-redhat-borderDark/40 flex items-center justify-between">
+            <span class="text-[10px] text-gray-500">Ref: RB-OPS-202</span>
+            <button class="view-runbook-btn text-xs font-bold text-redhat-red hover:underline flex items-center" data-guide="base_os">
+              Open Playbook <i class="fa-solid fa-arrow-right ml-1.5 text-[10px]"></i>
+            </button>
+          </div>
+        </div>
+
+        <!-- Guide 2: MicroShift Network Topology -->
+        <div class="runbook-card bg-redhat-lightGray border border-gray-200 rounded-xl p-5 hover:border-redhat-red/40 hover:-translate-y-1 transition-all duration-300 flex flex-col justify-between dark:bg-redhat-cardDark dark:border-redhat-borderDark dark:hover:border-redhat-red/40" data-keywords="microshift network topology diagram edge routing device communication proxy local ingress firewall local cluster">
+          <div class="space-y-3">
+            <div class="flex items-center justify-between">
+              <span class="px-2 py-0.5 bg-yellow-500/10 text-yellow-500 border border-yellow-500/20 text-[10px] font-bold rounded uppercase">Architecture</span>
+              <span class="text-xs text-gray-500 font-semibold font-mono">diagram-microshift</span>
+            </div>
+            <h4 class="font-rh font-bold text-lg text-redhat-dark dark:text-white">MicroShift Network Topology</h4>
+            <p class="text-gray-600 dark:text-gray-400 text-xs leading-relaxed">
+              Visualizes edge deployment topologies. Explains how MicroShift devices connect back to regional clusters via secure proxy boxes and API interfaces.
+            </p>
+          </div>
+          <div class="mt-6 pt-4 border-t border-gray-200 dark:border-redhat-borderDark/40 flex items-center justify-between">
+            <span class="text-[10px] text-gray-500">Ref: RB-ARC-011</span>
+            <button class="view-runbook-btn text-xs font-bold text-redhat-red hover:underline flex items-center" data-guide="microshift">
+              View Diagram <i class="fa-solid fa-arrow-right ml-1.5 text-[10px]"></i>
+            </button>
+          </div>
+        </div>
+
+        <!-- Guide 3: Namespace requests -->
+        <div class="runbook-card bg-redhat-lightGray border border-gray-200 rounded-xl p-5 hover:border-redhat-red/40 hover:-translate-y-1 transition-all duration-300 flex flex-col justify-between dark:bg-redhat-cardDark dark:border-redhat-borderDark dark:hover:border-redhat-red/40" data-keywords="request namespace project operations quota application approval process resource limits request namespace">
+          <div class="space-y-3">
+            <div class="flex items-center justify-between">
+              <span class="px-2 py-0.5 bg-green-500/10 text-green-500 border border-green-500/20 text-[10px] font-bold rounded uppercase">Operations</span>
+              <span class="text-xs text-gray-500 font-semibold font-mono">RB-OPS-012</span>
+            </div>
+            <h4 class="font-rh font-bold text-lg text-redhat-dark dark:text-white">Namespace Request Protocol</h4>
+            <p class="text-gray-600 dark:text-gray-400 text-xs leading-relaxed">
+              Step-by-step procedure for development teams to submit new project namespace requests, default quota limits, cpu shares, and LDAP workspace mapping rules.
+            </p>
+          </div>
+          <div class="mt-6 pt-4 border-t border-gray-200 dark:border-redhat-borderDark/40 flex items-center justify-between">
+            <span class="text-[10px] text-gray-500">Ref: RB-OPS-012</span>
+            <button class="view-runbook-btn text-xs font-bold text-redhat-red hover:underline flex items-center" data-guide="namespace">
+              Open Runbook <i class="fa-solid fa-arrow-right ml-1.5 text-[10px]"></i>
+            </button>
+          </div>
+        </div>
+
+      </div>
+
+    </div>
+  </section>
+
+  <!-- MODAL / DRAWER FOR DETAILED RUNBOOK VIEW -->
+  <div id="runbook-drawer" class="fixed inset-0 z-50 overflow-hidden hidden" aria-labelledby="slide-over-title" role="dialog" aria-modal="true">
+    <div class="absolute inset-0 overflow-hidden">
+      
+      <!-- Backdrop overlay -->
+      <div id="drawer-backdrop" class="absolute inset-0 bg-black/60 backdrop-blur-sm transition-opacity opacity-0 duration-300 pointer-events-none"></div>
+
+      <div class="pointer-events-none fixed inset-y-0 right-0 flex max-w-full pl-10">
+        <div id="drawer-panel" class="pointer-events-auto w-screen max-w-2xl transform transition-transform translate-x-full duration-300 ease-in-out bg-white border-l border-gray-200 shadow-2xl flex flex-col justify-between dark:bg-redhat-dark dark:border-redhat-borderDark">
+          
+          <!-- Drawer Header -->
+          <div class="px-6 py-5 border-b border-gray-200 dark:border-redhat-borderDark flex items-center justify-between">
+            <div class="flex items-center space-x-3">
+              <span id="drawer-badge" class="px-2.5 py-0.5 text-xs font-bold rounded uppercase">Category</span>
+              <span id="drawer-ref" class="text-xs text-gray-500 font-mono">Ref</span>
+            </div>
+            <button id="close-drawer-btn" class="text-gray-400 hover:text-redhat-dark dark:hover:text-white focus:outline-none p-1.5 rounded-lg hover:bg-gray-100 dark:hover:bg-redhat-accent/50">
+              <i class="fa-solid fa-xmark text-xl"></i>
+            </button>
+          </div>
+
+          <!-- Drawer Content -->
+          <div class="flex-grow overflow-y-auto px-6 py-6 space-y-6" id="drawer-content-body">
+            <!-- Dynamic Content Injected Here -->
+          </div>
+
+          <!-- Drawer Footer -->
+          <div class="px-6 py-4 bg-gray-50 border-t border-gray-200 dark:bg-redhat-cardDark dark:border-redhat-borderDark flex items-center justify-between">
+            <div class="flex items-center space-x-2 text-xs text-gray-500">
+              <i class="fa-solid fa-circle-info text-redhat-red"></i>
+              <span>Need help? Contact the <a href="mailto:devops-support@company.com" class="text-redhat-red hover:underline font-semibold">DevOps Enablement Group</a>.</span>
+            </div>
+            <button id="copy-runbook-btn" class="px-4 py-2 rounded-lg bg-redhat-accent text-white hover:bg-redhat-red transition-colors text-xs font-bold">
+              <i class="fa-solid fa-copy mr-1.5"></i> Copy Contents
+            </button>
+          </div>
+
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- INTERACTIVE PLAYGROUND SANDBOX DETAILS -->
+  <section class="py-20 bg-redhat-lightGray dark:bg-redhat-cardDark border-t border-gray-200 dark:border-redhat-borderDark/80 transition-colors duration-300" id="sandbox">
+    <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center space-y-8">
+      
+      <div class="w-16 h-16 rounded-full bg-redhat-red/10 border border-redhat-red/30 flex items-center justify-center text-redhat-red text-3xl mx-auto">
+        <i class="fa-solid fa-cubes"></i>
+      </div>
+      <div class="space-y-3">
+        <h3 class="font-rh font-extrabold text-3xl text-redhat-dark dark:text-white">
+          Red Hat Developer Sandbox
+        </h3>
+        <p class="text-gray-600 dark:text-gray-400 text-sm max-w-2xl mx-auto">
+          Get free access to a private cloud sandbox Namespace in a shared OpenShift cluster for up to 30 days! Perfect for developers testing Kubernetes manifest structures, APIs, and automated git hooks in a safe environment.
+        </p>
+      </div>
+
+      <div class="grid grid-cols-2 md:grid-cols-4 gap-4 max-w-3xl mx-auto">
+        <div class="bg-white border border-gray-200 dark:bg-redhat-dark dark:border-redhat-borderDark p-4 rounded-xl shadow-sm text-center">
+          <span class="block text-redhat-red font-bold text-lg"><i class="fa-solid fa-user-shield"></i></span>
+          <span class="block text-[11px] text-gray-500 font-semibold mt-1 uppercase">Admin Access</span>
+        </div>
+        <div class="bg-white border border-gray-200 dark:bg-redhat-dark dark:border-redhat-borderDark p-4 rounded-xl shadow-sm text-center">
+          <span class="block text-redhat-red font-bold text-lg"><i class="fa-solid fa-code"></i></span>
+          <span class="block text-[11px] text-gray-500 font-semibold mt-1 uppercase">Web IDE Console</span>
+        </div>
+        <div class="bg-white border border-gray-200 dark:bg-redhat-dark dark:border-redhat-borderDark p-4 rounded-xl shadow-sm text-center">
+          <span class="block text-redhat-red font-bold text-lg"><i class="fa-solid fa-rotate"></i></span>
+          <span class="block text-[11px] text-gray-500 font-semibold mt-1 uppercase">Tekton pipelines</span>
+        </div>
+        <div class="bg-white border border-gray-200 dark:bg-redhat-dark dark:border-redhat-borderDark p-4 rounded-xl shadow-sm text-center">
+          <span class="block text-redhat-red font-bold text-lg"><i class="fa-solid fa-clock-rotate-left"></i></span>
+          <span class="block text-[11px] text-gray-500 font-semibold mt-1 uppercase">30-Day Lease</span>
+        </div>
+      </div>
+
+      <div class="pt-4">
+        <a href="https://developers.redhat.com/developer-sandbox" target="_blank" class="inline-flex items-center px-8 py-3.5 rounded-xl bg-redhat-red hover:bg-redhat-redHover text-white font-bold tracking-wide transition-all shadow-md hover:shadow-lg glow-red hover:-translate-y-0.5">
+          Provision Your Sandbox Namespace <i class="fa-solid fa-up-right-from-square ml-2.5"></i>
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <!-- INTERACTIVE FEEDBACK SECTION -->
+  <section class="py-16 bg-white border-t border-gray-200 dark:bg-redhat-dark dark:border-redhat-borderDark transition-colors duration-300">
+    <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center space-y-8">
+      
+      <div class="space-y-3">
+        <h3 class="font-rh font-extrabold text-2xl sm:text-3xl text-redhat-dark dark:text-white">
+          Help Us Improve Our Curricula
+        </h3>
+        <p class="text-gray-600 dark:text-gray-400 text-sm max-w-xl mx-auto">
+          Is there a specific OpenShift topic or DevOps tool you would like a runbook for? Give us your quick rating or submit a suggestion directly.
+        </p>
+      </div>
+
+      <!-- Rating Widgets -->
+      <div class="flex flex-col sm:flex-row items-center justify-center gap-6">
+        <div class="flex items-center space-x-2 bg-gray-50 border border-gray-200 dark:bg-redhat-cardDark dark:border-redhat-borderDark/60 rounded-xl px-4 py-2.5">
+          <span class="text-xs text-gray-500 dark:text-gray-400 font-semibold mr-2">Rate Portal Utility:</span>
+          <button class="feedback-star text-yellow-500 hover:scale-110 transition-transform" data-rating="1"><i class="fa-regular fa-star text-lg"></i></button>
+          <button class="feedback-star text-yellow-500 hover:scale-110 transition-transform" data-rating="2"><i class="fa-regular fa-star text-lg"></i></button>
+          <button class="feedback-star text-yellow-500 hover:scale-110 transition-transform" data-rating="3"><i class="fa-regular fa-star text-lg"></i></button>
+          <button class="feedback-star text-yellow-500 hover:scale-110 transition-transform" data-rating="4"><i class="fa-regular fa-star text-lg"></i></button>
+          <button class="feedback-star text-yellow-500 hover:scale-110 transition-transform" data-rating="5"><i class="fa-regular fa-star text-lg"></i></button>
+        </div>
+
+        <span class="text-gray-300 dark:text-gray-600 text-sm hidden sm:inline">|</span>
+
+        <!-- Simple Suggestion form input -->
+        <div class="flex w-full sm:w-auto max-w-md shadow-sm">
+          <input type="text" id="suggestion-input" 
+            placeholder="Suggest a runbook topic..." 
+            class="flex-grow px-4 py-2 rounded-l-lg bg-gray-50 border border-gray-300 text-redhat-dark placeholder-gray-500 focus:outline-none focus:border-redhat-red text-sm dark:bg-redhat-dark dark:border-redhat-borderDark dark:text-white dark:placeholder-gray-500">
+          <button id="submit-suggestion-btn" class="px-5 py-2 bg-redhat-red hover:bg-redhat-redHover text-white text-sm font-bold rounded-r-lg transition-colors">
+            Submit
+          </button>
+        </div>
+      </div>
+      
+      <div id="feedback-success-msg" class="hidden text-xs text-green-500 font-semibold animate-pulse">
+        <i class="fa-solid fa-circle-check mr-1.5"></i> Thank you! Your feedback has been queued for synchronization via git workspace tracking.
+      </div>
+
+    </div>
+  </section>
+
+  <!-- FOOTER -->
+  <footer class="bg-white border-t border-gray-200 dark:bg-redhat-dark dark:border-redhat-borderDark/80 py-10 transition-colors duration-300">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="flex flex-col md:flex-row items-center justify-between gap-6">
+        
+        <!-- Brand -->
+        <div class="flex items-center space-x-3">
+          <div class="w-8 h-8 bg-redhat-red rounded flex items-center justify-center text-white">
+            <i class="fa-solid fa-graduation-cap"></i>
+          </div>
+          <div>
+            <span class="font-rh font-bold text-sm tracking-tight text-redhat-dark dark:text-white font-rh">ENTERPRISE ENABLEMENT PORTAL</span>
+            <p class="text-[10px] text-gray-500">© 2026 Enterprise DevOps Platform Team. Internal Use Only.</p>
+          </div>
+        </div>
+
+        <!-- Links -->
+        <div class="flex flex-wrap justify-center gap-6 text-xs text-gray-500 dark:text-gray-400">
+          <a href="#paths" class="hover:text-redhat-red transition-colors">Learning Paths</a>
+          <a href="#courses-sec" class="hover:text-redhat-red transition-colors">Course Catalog</a>
+          <a href="#runbooks" class="hover:text-redhat-red transition-colors">Internal Guides</a>
+          <a href="https://developers.redhat.com" target="_blank" class="hover:text-redhat-red transition-colors flex items-center">
+            Red Hat Developer <i class="fa-solid fa-up-right-from-square ml-1 text-[8px]"></i>
+          </a>
+        </div>
+
+        <!-- Quick Top Scroll button -->
+        <button onclick="window.scrollTo({top: 0, behavior: 'smooth'})" class="p-2 bg-gray-100 text-gray-600 hover:text-redhat-dark dark:bg-redhat-accent/40 dark:border-redhat-borderDark dark:text-gray-400 dark:hover:text-white rounded-lg" title="Scroll to Top">
+          <i class="fa-solid fa-arrow-up"></i>
+        </button>
+
+      </div>
+    </div>
+  </footer>
+
+  <!-- DYNAMIC COURSE DATABASE -->
+  <script>
+    const REDHAT_COURSES = [
+      // Linux Track
+      {
+        course_code: "RH124",
+        title: "Red Hat System Administration I",
+        description: "Designed for IT professionals without previous Linux administration experience. Learn core administration tasks including service management, storage configuration, and network settings.",
+        url: "https://www.redhat.com/en/services/training/rh124-red-hat-system-administration-i"
+      },
+      {
+        course_code: "RH134",
+        title: "Red Hat System Administration II",
+        description: "A follow-up to Linux System Administration I. Focuses on advanced CLI storage management, network configuration, container execution, security permissions, and enterprise troubleshooting.",
+        url: "https://www.redhat.com/en/services/training/rh134-red-hat-system-administration-ii"
+      },
+      {
+        course_code: "RH200",
+        title: "Red Hat Certified System Administrator (RHCSA) Rapid Track",
+        description: "Designed for experienced Linux admins. Combines the content of RH124 and RH134 to prepare you for the RHCSA certification exam in an accelerated environment.",
+        url: "https://www.redhat.com/en/services/training/rh200-red-hat-certified-system-administrator-rapid-track-course-exam"
+      },
+      // Ansible Track
+      {
+        course_code: "RH294",
+        title: "Red Hat System Administration III: Linux Automation with Ansible",
+        description: "Learn how to deploy, manage, and scale system configurations using Ansible Automation Platform. Automate daily administrative duties across multiple RHEL servers.",
+        url: "https://www.redhat.com/en/services/training/rh294-red-hat-enterprise-linux-automation-ansible"
+      },
+      {
+        course_code: "DO374",
+        title: "Developing Advanced Automation with Red Hat Ansible Automation Platform",
+        description: "Advance your automation capabilities. Learn structured development techniques, scale operations, integrate workflows, and configure complex collections and playbooks.",
+        url: "https://www.redhat.com/en/services/training/do374-developing-advanced-automation-red-hat-ansible-automation-platform"
+      },
+      // OpenShift Track
+      {
+        course_code: "DO180",
+        title: "Red Hat OpenShift Administration I: Operating a Production Cluster",
+        description: "The official introduction to container execution, Kubernetes infrastructure, and OpenShift administration. Master namespaces, CLI commands, and deployment models.",
+        url: "https://www.redhat.com/en/services/training/do180-red-hat-openshift-i-containers-kubernetes"
+      },
+      {
+        course_code: "DO280",
+        title: "Red Hat OpenShift Administration II: Operating a Production Kubernetes Cluster",
+        description: "Master user authentication, RBAC, SDN/OVN networking, custom resource definition configurations, operator management, and day-2 administrative tasks.",
+        url: "https://www.redhat.com/en/services/training/do280-red-hat-openshift-administration-ii-operating-production-kubernetes-cluster"
+      },
+      {
+        course_code: "DO288",
+        title: "Red Hat OpenShift Development II: Containerizing Applications",
+        description: "Design, build, deploy, and scale containerized applications on OpenShift. Learn multi-stage image builds, persistent volumes, environment configs, and health probes.",
+        url: "https://www.redhat.com/en/services/training/do288-red-hat-openshift-development-ii-containerizing-applications"
+      },
+      {
+        course_code: "DO380",
+        title: "Red Hat OpenShift Administration III: Scaling Kubernetes Deployments",
+        description: "Scale OpenShift deployments. Configure advanced node autoscaling, multi-cluster control planes, security certifications, logging stacks, and automated integrations.",
+        url: "https://www.redhat.com/en/services/training/do380-red-hat-openshift-administration-iii-scaling-kubernetes-deployments-enterprise"
+      }
+    ];
+
+    const RUNBOOKS_DATABASE = {
+      base_os: {
+        title: "Base OS Configuration Script",
+        ref: "playbooks/01-base-os.yaml",
+        category: "Automation",
+        badgeBg: "bg-blue-500/20 text-blue-500 dark:text-blue-400 border border-blue-500/30",
+        content: `
+          <div class="space-y-4">
+            <h3 class="font-rh font-bold text-xl text-redhat-dark dark:text-white border-b border-gray-200 dark:border-redhat-borderDark pb-2">1.0 Overview</h3>
+            <p class="text-sm text-gray-600 dark:text-gray-300 leading-relaxed">
+              This Ansible playbook automates standard server parameters for **RHEL 9 edge hosts**. It configures proxy files, registers systems with Red Hat Subscription Manager, and secures base SSH access keys.
+            </p>
+
+            <h3 class="font-rh font-bold text-base text-redhat-dark dark:text-white">2.0 playbooks/01-base-os.yaml Playbook Manifest</h3>
+            <p class="text-xs text-gray-500">Deploy this configuration via Ansible Automation Platform to maintain node compliance:</p>
+            <pre class="bg-gray-100 border border-gray-200 dark:bg-redhat-accent/30 dark:border-redhat-borderDark/80 rounded-lg p-3 font-rhmono text-xs text-red-600 dark:text-red-400 overflow-x-auto">
+---
+- name: Configure Base RHEL OS Compliance
+  hosts: edge_nodes
+  become: yes
+  vars:
+    proxy_server: "http://proxy.company.com:8080"
+    dns_servers:
+      - 10.0.1.10
+      - 10.0.1.11
+
+  tasks:
+    - name: Set System Proxy Variables in /etc/environment
+      lineinfile:
+        path: /etc/environment
+        line: "{{ item }}"
+      loop:
+        - "http_proxy={{ proxy_server }}"
+        - "https_proxy={{ proxy_server }}"
+
+    - name: Apply Corporate DNS configuration
+      template:
+        src: templates/resolv.conf.j2
+        dest: /etc/resolv.conf
+        owner: root
+        group: root
+        mode: '0644'
+
+    - name: Ensure firewalld daemon is active
+      systemd:
+        name: firewalld
+        state: started
+        enabled: yes</pre>
+          </div>
+        `,
+        copyContent: "---\n- name: Configure Base RHEL OS Compliance\n  hosts: edge_nodes\n  become: yes\n  vars:\n    proxy_server: \"http://proxy.company.com:8080\"\n    dns_servers:\n      - 10.0.1.10\n      - 10.0.1.11"
+      },
+      microshift: {
+        title: "MicroShift Network Topology Diagram",
+        ref: "diagram-microshift",
+        category: "Architecture",
+        badgeBg: "bg-yellow-500/20 text-yellow-600 dark:text-yellow-400 border border-yellow-500/30",
+        content: `
+          <div class="space-y-4">
+            <h3 class="font-rh font-bold text-xl text-redhat-dark dark:text-white border-b border-gray-200 dark:border-redhat-borderDark pb-2">1.0 Edge Topology</h3>
+            <p class="text-sm text-gray-600 dark:text-gray-300 leading-relaxed">
+              MicroShift is optimized for thin edge devices (RHEL Device Edge). Below is the logical networking diagram representing secure proxy-restricted connectivity to core clusters.
+            </p>
+
+            <div class="p-4 bg-gray-100 border border-gray-200 dark:bg-redhat-accent/20 dark:border-redhat-borderDark rounded-xl flex items-center justify-center">
+              <svg class="w-full max-w-lg text-gray-700 dark:text-gray-300" viewBox="0 0 500 220" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <rect x="20" y="70" width="100" height="60" rx="6" fill="#EE0000" fill-opacity="0.1" stroke="#EE0000" stroke-width="2"/>
+                <text x="35" y="105" font-family="Inter, sans-serif" font-size="10" font-weight="bold" fill="currentColor">Edge Device</text>
+                <text x="42" y="120" font-family="Inter, sans-serif" font-size="8" fill="currentColor">MicroShift</text>
+                
+                <path d="M120 100 H200" stroke="currentColor" stroke-width="2" stroke-dasharray="4 4"/>
+                <polygon points="200,100 192,96 192,104" fill="currentColor"/>
+
+                <rect x="200" y="60" width="100" height="80" rx="6" fill="currentColor" fill-opacity="0.05" stroke="currentColor" stroke-width="2"/>
+                <text x="220" y="95" font-family="Inter, sans-serif" font-size="10" font-weight="bold" fill="currentColor">Sec Proxy</text>
+                <text x="215" y="110" font-family="Inter, sans-serif" font-size="8" fill="currentColor">Gateway 443</text>
+                <text x="212" y="125" font-family="Inter, sans-serif" font-size="8" fill="currentColor">Port Whitelisting</text>
+
+                <path d="M300 100 H380" stroke="currentColor" stroke-width="2" stroke-dasharray="4 4"/>
+                <polygon points="380,100 372,96 372,104" fill="currentColor"/>
+
+                <rect x="380" y="70" width="100" height="60" rx="6" fill="#151515" fill-opacity="0.1" stroke="currentColor" stroke-width="2"/>
+                <text x="390" y="105" font-family="Inter, sans-serif" font-size="10" font-weight="bold" fill="currentColor">Core Cluster</text>
+                <text x="395" y="120" font-family="Inter, sans-serif" font-size="8" fill="currentColor">Kubernetes API</text>
+              </svg>
+            </div>
+
+            <h3 class="font-rh font-bold text-base text-redhat-dark dark:text-white">2.0 Connectivity Details</h3>
+            <ul class="list-disc pl-5 text-sm text-gray-600 dark:text-gray-300 space-y-1.5">
+              <li>All outgoing requests originate from MicroShift agents to core clusters over port **443 TCP**.</li>
+              <li>Local ingress configurations allow device debugging directly via localhost network maps.</li>
+              <li>Network policies deny edge containers from traversing neighboring node structures.</li>
+            </ul>
+          </div>
+        `,
+        copyContent: "Network Topology Map: Edge Device -> Sec Proxy Gateway -> Core Cluster"
+      },
+      namespace: {
+        title: "How to Request a Namespace / Project",
+        ref: "RB-OPS-012",
+        category: "Operations",
+        badgeBg: "bg-blue-500/20 text-blue-500 dark:text-blue-400 border border-blue-500/30",
+        content: `
+          <div class="space-y-4">
+            <h3 class="font-rh font-bold text-xl text-redhat-dark dark:text-white border-b border-gray-200 dark:border-redhat-borderDark pb-2">1.0 Overview</h3>
+            <p class="text-sm text-gray-600 dark:text-gray-300 leading-relaxed">
+              In OpenShift, a <strong>Project</strong> is a Kubernetes Namespace with additional metadata. This guide outlines the standard company procedure to request a namespace in our dev, staging, or production clusters.
+            </p>
+            
+            <div class="bg-yellow-500/15 border-l-4 border-yellow-500 p-4 rounded text-xs text-yellow-600 dark:text-yellow-500 bg-yellow-50">
+              <strong class="font-semibold block mb-1"><i class="fa-solid fa-triangle-exclamation"></i> Mandatory Limit Ranges</strong>
+              All standard dev projects are provisioned with defaults of 2 CPU cores and 4GB RAM limits. If your workload requires higher allocations, obtain Director approval prior to submitting the request.
+            </div>
+
+            <h3 class="font-rh font-bold text-base text-redhat-dark dark:text-white">2.0 Step-by-Step Request Protocol</h3>
+            <ol class="list-decimal pl-5 text-sm text-gray-600 dark:text-gray-300 space-y-2">
+              <li>Navigate to the internal Service Catalog under <strong>Services &rarr; OpenShift Space Provisioning</strong>.</li>
+              <li>Provide the project metadata: Project Name (format: <code>company-dept-app-[env]</code>), cost center, and team leads.</li>
+              <li>Under "Quota Request," select <strong>Standard tier</strong> or <strong>Custom tier</strong> (requires business justification upload).</li>
+              <li>Submit the form. Approval workflows trigger automated Tekton pipelines to provision the project in 5 minutes.</li>
+            </ol>
+          </div>
+        `,
+        copyContent: "oc login --server=https://api.cluster-jhub.prod.lan:6443\noc project company-dept-app-dev"
+      }
+    };
+  </script>
+
+  <!-- PORTAL LOGIC JAVASCRIPT -->
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      
+      const coursesGridContainer = document.getElementById('courses-grid-container');
+      const coursesEmptyState = document.getElementById('courses-empty-state');
+      const clearSearchEmptyBtn = document.getElementById('clear-search-empty-btn');
+      
+      // 1. DYNAMIC COURSE CARD RENDERING
+      function renderCourses(filteredCourses) {
+        coursesGridContainer.innerHTML = '';
+        
+        if (filteredCourses.length === 0) {
+          coursesGridContainer.classList.add('hidden');
+          coursesEmptyState.classList.remove('hidden');
+          return;
+        }
+        
+        coursesGridContainer.classList.remove('hidden');
+        coursesEmptyState.classList.add('hidden');
+        
+        filteredCourses.forEach(course => {
+          let trackIcon = '<i class="fa-solid fa-cube"></i>';
+          let borderAccent = 'hover:border-redhat-red/50';
+          if (course.course_code.startsWith('RH')) {
+            if (course.course_code === 'RH294') {
+              trackIcon = '<i class="fa-solid fa-gears"></i>';
+              borderAccent = 'hover:border-redhat-red/50';
+            } else {
+              trackIcon = '<i class="fa-brands fa-linux"></i>';
+              borderAccent = 'hover:border-slate-500/50';
+            }
+          } else if (course.course_code.startsWith('DO')) {
+            if (course.course_code === 'DO374') {
+              trackIcon = '<i class="fa-solid fa-gears"></i>';
+            } else {
+              trackIcon = '<i class="fa-solid fa-circle-nodes"></i>';
+            }
+          }
+
+          const cardHtml = `
+            <div class="course-card group bg-white border border-gray-200 rounded-2xl p-6 shadow-sm hover:shadow-xl transition-all duration-300 hover:-translate-y-1 dark:bg-redhat-dark dark:border-redhat-borderDark ${borderAccent}">
+              <div class="flex items-center justify-between">
+                <span class="px-2.5 py-0.5 bg-redhat-red/10 text-redhat-red text-xs font-bold rounded-lg border border-redhat-red/20 uppercase tracking-widest">${course.course_code}</span>
+                <span class="text-gray-400 text-lg">${trackIcon}</span>
+              </div>
+              <h4 class="font-rh font-bold text-base text-redhat-dark dark:text-white mt-5 group-hover:text-redhat-red dark:group-hover:text-redhat-red transition-colors line-clamp-1">${course.title}</h4>
+              <p class="text-gray-600 dark:text-gray-400 text-xs mt-2 leading-relaxed line-clamp-3 h-12">${course.description}</p>
+              
+              <div class="mt-6 pt-4 border-t border-gray-100 dark:border-redhat-borderDark/40">
+                <a href="${course.url}" target="_blank" class="block w-full text-center py-2.5 rounded-lg bg-gray-100 hover:bg-redhat-red text-gray-700 hover:text-white font-bold text-xs tracking-wider transition-all dark:bg-redhat-accent/50 dark:text-white dark:hover:bg-redhat-red">
+                  View Course <i class="fa-solid fa-arrow-up-right-from-square ml-1.5 text-[10px]"></i>
+                </a>
+              </div>
+            </div>
+          `;
+          coursesGridContainer.insertAdjacentHTML('beforeend', cardHtml);
+        });
+      }
+
+      renderCourses(REDHAT_COURSES);
+
+      // SEARCH DOM REFERENCES
+      const heroSearchInput = document.getElementById('hero-search');
+      const clearSearchBtn = document.getElementById('clear-search-btn');
+      const searchStatusBar = document.getElementById('search-status-bar');
+      const searchCountTxt = document.getElementById('search-count');
+      const searchQueryDisplay = document.getElementById('search-query-display');
+      const resetSearchBtn = document.getElementById('reset-search-btn');
+
+      // STATIC CARDS CONTAINER DOM REFERENCES
+      const learningPathCards = document.querySelectorAll('.learning-path-card');
+      const runbookCards = document.querySelectorAll('.runbook-card');
+
+      // 2. SEARCH & FILTERING LOGIC
+      function performFilter(queryText) {
+        const query = queryText.trim().toLowerCase();
+        
+        if (query.length === 0) {
+          searchStatusBar.classList.add('hidden');
+          clearSearchBtn.classList.add('hidden');
+          
+          renderCourses(REDHAT_COURSES);
+          learningPathCards.forEach(card => card.classList.remove('hidden'));
+          runbookCards.forEach(card => card.classList.remove('hidden'));
+          return;
+        }
+
+        searchStatusBar.classList.remove('hidden');
+        clearSearchBtn.classList.remove('hidden');
+        searchQueryDisplay.innerText = queryText;
+
+        const filteredCourses = REDHAT_COURSES.filter(course => 
+          course.course_code.toLowerCase().includes(query) ||
+          course.title.toLowerCase().includes(query) ||
+          course.description.toLowerCase().includes(query)
+        );
+        renderCourses(filteredCourses);
+
+        let visiblePaths = 0;
+        learningPathCards.forEach(card => {
+          const keywords = card.getAttribute('data-keywords') || '';
+          const cardText = card.innerText.toLowerCase();
+          
+          if (keywords.toLowerCase().includes(query) || cardText.includes(query)) {
+            card.classList.remove('hidden');
+            visiblePaths++;
+          } else {
+            card.classList.add('hidden');
+          }
+        });
+
+        let visibleRunbooks = 0;
+        runbookCards.forEach(card => {
+          const keywords = card.getAttribute('data-keywords') || '';
+          const cardText = card.innerText.toLowerCase();
+          
+          if (keywords.toLowerCase().includes(query) || cardText.includes(query)) {
+            card.classList.remove('hidden');
+            visibleRunbooks++;
+          } else {
+            card.classList.add('hidden');
+          }
+        });
+
+        searchCountTxt.innerText = filteredCourses.length + visiblePaths + visibleRunbooks;
+      }
+
+      heroSearchInput.addEventListener('input', (e) => {
+        performFilter(e.target.value);
+      });
+
+      clearSearchBtn.addEventListener('click', () => {
+        heroSearchInput.value = '';
+        performFilter('');
+        heroSearchInput.focus();
+      });
+
+      resetSearchBtn.addEventListener('click', () => {
+        heroSearchInput.value = '';
+        performFilter('');
+      });
+
+      clearSearchEmptyBtn.addEventListener('click', () => {
+        heroSearchInput.value = '';
+        performFilter('');
+      });
+
+      window.addEventListener('keydown', (e) => {
+        if (e.key === '/' && document.activeElement !== heroSearchInput) {
+          e.preventDefault();
+          heroSearchInput.focus();
+          heroSearchInput.select();
+        }
+      });
+
+      document.querySelectorAll('.quick-tag').forEach(btn => {
+        btn.addEventListener('click', (e) => {
+          const tag = e.target.getAttribute('data-tag');
+          heroSearchInput.value = tag;
+          performFilter(tag);
+          document.getElementById('hero').scrollIntoView({ behavior: 'smooth' });
+        });
+      });
+
+      // 3. RUNBOOKS DRAWER SYSTEM (SLIDE-OVER MODAL)
+      const drawer = document.getElementById('runbook-drawer');
+      const drawerBackdrop = document.getElementById('drawer-backdrop');
+      const drawerPanel = document.getElementById('drawer-panel');
+      const closeDrawerBtn = document.getElementById('close-drawer-btn');
+      const drawerBadge = document.getElementById('drawer-badge');
+      const drawerRef = document.getElementById('drawer-ref');
+      const drawerContentBody = document.getElementById('drawer-content-body');
+      const copyRunbookBtn = document.getElementById('copy-runbook-btn');
+      
+      let activeCopyContent = '';
+
+      function openDrawer(guideKey) {
+        const guideData = RUNBOOKS_DATABASE[guideKey];
+        if (!guideData) return;
+
+        drawerBadge.innerText = guideData.category;
+        drawerBadge.className = `px-2.5 py-0.5 text-xs font-bold rounded uppercase ${guideData.badgeBg}`;
+        drawerRef.innerText = guideData.ref;
+        drawerContentBody.innerHTML = `
+          <h2 class="font-rh font-extrabold text-2xl text-redhat-dark dark:text-white">${guideData.title}</h2>
+          <div class="mt-4 prose prose-slate dark:prose-invert max-w-none">
+            ${guideData.content}
+          </div>
+        `;
+        activeCopyContent = guideData.copyContent;
+
+        drawer.classList.remove('hidden');
+        setTimeout(() => {
+          drawerBackdrop.classList.remove('opacity-0');
+          drawerBackdrop.classList.add('opacity-100');
+          drawerPanel.classList.remove('translate-x-full');
+          drawerPanel.classList.add('translate-x-0');
+        }, 50);
+      }
+
+      function closeDrawer() {
+        drawerBackdrop.classList.remove('opacity-100');
+        drawerBackdrop.classList.add('opacity-0');
+        drawerPanel.classList.remove('translate-x-0');
+        drawerPanel.classList.add('translate-x-full');
+        
+        setTimeout(() => {
+          drawer.classList.add('hidden');
+        }, 300);
+      }
+
+      document.querySelectorAll('.view-runbook-btn').forEach(btn => {
+        btn.addEventListener('click', (e) => {
+          const guideKey = e.currentTarget.getAttribute('data-guide');
+          openDrawer(guideKey);
+        });
+      });
+
+      closeDrawerBtn.addEventListener('click', closeDrawer);
+      drawerBackdrop.addEventListener('click', closeDrawer);
+
+      copyRunbookBtn.addEventListener('click', () => {
+        navigator.clipboard.writeText(activeCopyContent).then(() => {
+          const originalText = copyRunbookBtn.innerHTML;
+          copyRunbookBtn.innerHTML = `<i class="fa-solid fa-check mr-1.5"></i> Copied!`;
+          copyRunbookBtn.classList.remove('bg-redhat-accent');
+          copyRunbookBtn.classList.add('bg-green-600');
+          
+          setTimeout(() => {
+            copyRunbookBtn.innerHTML = originalText;
+            copyRunbookBtn.classList.remove('bg-green-600');
+            copyRunbookBtn.classList.add('bg-redhat-accent');
+          }, 2000);
+        });
+      });
+
+      // 4. ROLE-BASED LEARNING PATHS COMPLETED STATE SAVING
+      const pathCheckboxes = document.querySelectorAll('.path-checkbox');
+      
+      function loadSavedProgress() {
+        const savedProgress = JSON.parse(localStorage.getItem('portal_catalog_paths_progress') || '{}');
+        
+        pathCheckboxes.forEach(checkbox => {
+          const path = checkbox.getAttribute('data-path');
+          const idx = checkbox.getAttribute('data-idx');
+          
+          if (savedProgress[path] && savedProgress[path].includes(idx)) {
+            checkbox.checked = true;
+          }
+        });
+        
+        recalculateProgress();
+      }
+
+      function handleProgressChange(e) {
+        const checkbox = e.target;
+        const path = checkbox.getAttribute('data-path');
+        const idx = checkbox.getAttribute('data-idx');
+        
+        let savedProgress = JSON.parse(localStorage.getItem('portal_catalog_paths_progress') || '{}');
+        if (!savedProgress[path]) {
+          savedProgress[path] = [];
+        }
+
+        if (checkbox.checked) {
+          if (!savedProgress[path].includes(idx)) {
+            savedProgress[path].push(idx);
+          }
+        } else {
+          savedProgress[path] = savedProgress[path].filter(item => item !== idx);
+        }
+
+        localStorage.setItem('portal_catalog_paths_progress', JSON.stringify(savedProgress));
+        recalculateProgress();
+      }
+
+      function recalculateProgress() {
+        const paths = ['container', 'admin', 'devops', 'iac'];
+        
+        paths.forEach(path => {
+          const pathChecks = document.querySelectorAll(`.path-checkbox[data-path="${path}"]`);
+          const checkedCount = document.querySelectorAll(`.path-checkbox[data-path="${path}"]:checked`).length;
+          const totalCount = pathChecks.length;
+          
+          const pct = Math.round((checkedCount / totalCount) * 100);
+          
+          // Select progress display element
+          const progressTxt = document.querySelector(`.path-progress-txt[data-path-progress="${path}"]`);
+          if (progressTxt) {
+            progressTxt.innerText = `${pct}% Completed`;
+            if (pct === 100) {
+              progressTxt.classList.remove('text-redhat-red');
+              progressTxt.classList.add('text-green-500');
+            } else {
+              progressTxt.classList.remove('text-green-500');
+              progressTxt.classList.add('text-redhat-red');
+            }
+          }
+        });
+      }
+
+      pathCheckboxes.forEach(checkbox => {
+        checkbox.addEventListener('change', handleProgressChange);
+      });
+
+      loadSavedProgress();
+
+      // 5. LIGHT/DARK THEME TOGGLE
+      const themeToggleBtn = document.getElementById('theme-toggle');
+      const currentTheme = localStorage.getItem('portal_theme') || 'dark';
+      
+      if (currentTheme === 'light') {
+        document.documentElement.classList.remove('dark');
+      } else {
+        document.documentElement.classList.add('dark');
+      }
+
+      themeToggleBtn.addEventListener('click', () => {
+        document.documentElement.classList.toggle('dark');
+        if (document.documentElement.classList.contains('dark')) {
+          localStorage.setItem('portal_theme', 'dark');
+        } else {
+          localStorage.setItem('portal_theme', 'light');
+        }
+      });
+
+      // 6. MOBILE MENU TOGGLE
+      const mobileMenuBtn = document.getElementById('mobile-menu-btn');
+      const menuIcon = document.getElementById('menu-icon');
+      const mobileMenu = document.getElementById('mobile-menu');
+
+      mobileMenuBtn.addEventListener('click', () => {
+        mobileMenu.classList.toggle('hidden');
+        if (mobileMenu.classList.contains('hidden')) {
+          menuIcon.className = 'fa-solid fa-bars text-xl';
+        } else {
+          menuIcon.className = 'fa-solid fa-xmark text-xl';
+        }
+      });
+
+      document.querySelectorAll('.mobile-nav-link').forEach(link => {
+        link.addEventListener('click', () => {
+          mobileMenu.classList.add('hidden');
+          menuIcon.className = 'fa-solid fa-bars text-xl';
+        });
+      });
+
+      // 7. FEEDBACK STAR RATINGS
+      const feedbackStars = document.querySelectorAll('.feedback-star');
+      const suggestionInput = document.getElementById('suggestion-input');
+      const submitSuggestionBtn = document.getElementById('submit-suggestion-btn');
+      const feedbackSuccessMsg = document.getElementById('feedback-success-msg');
+      let currentSelectedRating = 0;
+
+      function highlightStars(rating) {
+        feedbackStars.forEach(star => {
+          const idx = parseInt(star.getAttribute('data-rating'));
+          const starIcon = star.querySelector('i');
+          if (idx <= rating) {
+            starIcon.className = 'fa-solid fa-star text-lg';
+          } else {
+            starIcon.className = 'fa-regular fa-star text-lg';
+          }
+        });
+      }
+
+      feedbackStars.forEach(star => {
+        star.addEventListener('mouseenter', (e) => {
+          const rating = parseInt(e.currentTarget.getAttribute('data-rating'));
+          highlightStars(rating);
+        });
+
+        star.addEventListener('mouseleave', () => {
+          highlightStars(currentSelectedRating);
+        });
+
+        star.addEventListener('click', (e) => {
+          currentSelectedRating = parseInt(e.currentTarget.getAttribute('data-rating'));
+          highlightStars(currentSelectedRating);
+          feedbackSuccessMsg.classList.remove('hidden');
+          setTimeout(() => feedbackSuccessMsg.classList.add('hidden'), 4000);
+        });
+      });
+
+      submitSuggestionBtn.addEventListener('click', () => {
+        if (suggestionInput.value.trim().length > 0) {
+          suggestionInput.value = '';
+          feedbackSuccessMsg.classList.remove('hidden');
+          setTimeout(() => feedbackSuccessMsg.classList.add('hidden'), 4000);
+        }
+      });
+
+    });
+  </script>
+</body>
+</html>
